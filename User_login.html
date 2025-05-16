@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #c5d5c5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            height: 100px;
+            background-color: #05420f;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+        }
+
+        header .logo {
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+        }
+
+        .login-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-box {
+            background-color: #e9f5e9;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            width: 300px;
+            text-align: center;
+        }
+
+        .login-box h2 {
+            margin-bottom: 20px;
+            color: #05420f;
+        }
+
+        .login-box input[type="text"],
+        .login-box input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 10px;
+            background-color: #05420f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .login-box .links {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .login-box .links a {
+            color: #05420f;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+
+        footer {
+            height: 100px;
+            background-color: #05420f;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">Online Library Management System</div>
+    <nav>
+        <ul>
+            <li><a href="idex.html">Home</a></li>
+            <li><a href="user_login.html">User Login</a></li>
+            <li><a href="feedback.html">Feedback</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="login-container">
+    <div class="login-box">
+        <h2>User Login</h2>
+        <input type="text" placeholder="Username"><br>
+        <input type="password" placeholder="Password"><br>
+        <button>Login</button>
+        <div class="links">
+            <a href="#">Forgot password?</a>
+            |
+            <a href="#">Sign Up</a>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div>
+        Email: online.library@gmail.com<br>
+        Mobile: +88018********
+    </div>
+</footer>
+
+</body>
+</html>
