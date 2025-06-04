@@ -1,8 +1,8 @@
 <?php
 include('connection.php');
-?>
-<?php
-if(isset($_POST['submit'])) {
+$message = ""; // define message variable
+
+if (isset($_POST['submit'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
@@ -10,13 +10,13 @@ if(isset($_POST['submit'])) {
     $query = "SELECT * FROM student WHERE username='$username' AND password='$password'";
     $result = mysqli_query($db, $query);
 
-    if(mysqli_num_rows($result) > 0) {
+    if (mysqli_num_rows($result) > 0) {
         // User found, redirect to student dashboard
         header("Location: student_dashboard.php");
         exit();
     } else {
-        // User not found, show error message
-        echo "<script>alert('Invalid username or password');</script>";
+        // User not found, store error message
+        $message = "Invalid username or password.";
     }
 }
 ?>
@@ -25,7 +25,6 @@ if(isset($_POST['submit'])) {
 <html>
 <head>
   <title>User Login</title>
-  <link rel="stylesheet" href="style.css">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -99,6 +98,7 @@ if(isset($_POST['submit'])) {
       font-size: 25px;
       margin-bottom: 10px;
       color: #05420f;
+      text-align: center;
     }
 
     .box1 h3 {
@@ -134,6 +134,10 @@ if(isset($_POST['submit'])) {
       line-height: 90px;
       font-size: 14px;
     }
+
+    .alert {
+      margin-bottom: 15px;
+    }
   </style>
 </head>
 <body>
@@ -155,8 +159,16 @@ if(isset($_POST['submit'])) {
 <section>
   <div class="log_img">
     <div class="box1">
-      <h1 style="text-align: center;">Library Management System</h1>
+      <h1>Library Management System</h1>
       <h3>User Login Form</h3>
+
+      <!-- Display error message if set -->
+      <?php if (!empty($message)): ?>
+        <div class="alert alert-danger" style="text-align: center;">
+          <?php echo $message; ?>
+        </div>
+      <?php endif; ?>
+
       <form name="login" action="" method="POST">
         <div class="login form-group">
           <input class="form-control" type="text" name="username" placeholder="Username" required>
@@ -164,6 +176,7 @@ if(isset($_POST['submit'])) {
           <input class="btn btn-success" type="submit" name="submit" value="Login">
         </div>
       </form>
+
       <div class="links">
         <a href="#">Forgot password?</a> | <a href="registration.php">Sign Up</a>
       </div>

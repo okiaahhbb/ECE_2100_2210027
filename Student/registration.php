@@ -1,6 +1,7 @@
 <?php
 include('connection.php');
 $message = "";
+$alertClass = ""; // for Bootstrap alert class
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
@@ -22,14 +23,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif ($row['email'] == $email) {
             $message = "Email already exists. Please use another email.";
         }
+        $alertClass = "danger";
     } else {
         $sql = "INSERT INTO student (name, username, password, roll, email, phone)
                 VALUES ('$name', '$username', '$password', '$roll', '$email', '$phone')";
 
         if (mysqli_query($db, $sql)) {
             $message = "Registration successful!";
+            $alertClass = "success";
         } else {
             $message = "Registration failed: " . mysqli_error($db);
+            $alertClass = "danger";
         }
     }
 }
@@ -84,6 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       display: flex;
       justify-content: center;
       align-items: center;
+      padding: 40px 0;
     }
 
     .register-box {
@@ -116,6 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       border: none;
       border-radius: 5px;
       font-weight: bold;
+      margin-top: 10px;
     }
 
     .links {
@@ -127,6 +133,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       color: #05420f;
       text-decoration: none;
       margin: 0 5px;
+    }
+
+    .alert {
+      margin-top: 10px;
+      text-align: center;
     }
 
     footer {
@@ -157,6 +168,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="register-container">
   <div class="register-box">
     <h2>User Registration</h2>
+
+    <!-- Show alert if message exists -->
+    <?php if (!empty($message)) : ?>
+      <div class="alert alert-<?php echo $alertClass; ?>">
+        <?php echo $message; ?>
+      </div>
+    <?php endif; ?>
+
     <form action="" method="POST">
       <input type="text" name="name" placeholder="Name" required>
       <input type="text" name="username" placeholder="Username" required>
@@ -166,24 +185,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <input type="text" name="phone" placeholder="Phone No" required>
       <button type="submit" name="submit">Sign Up</button>
     </form>
+
     <div class="links">
       Already registered? <a href="student_login.php">Login</a>
     </div>
   </div>
 </div>
-
 <footer>
   <div>
     Email: online.library@gmail.com<br>
     Mobile: +88018XXXXXXXX
   </div>
 </footer>
-
-<?php if (!empty($message)) : ?>
-<script>
-  alert("<?php echo $message; ?>");
-</script>
-<?php endif; ?>
-
 </body>
 </html>
