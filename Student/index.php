@@ -1,126 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Online Library Management System</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<?php include 'header.php'; ?>
 
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f4f4;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
+<style>
+  body {
+    background-color: #c5d5c5;
+  }
 
-    .wrapper {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
+  .welcome-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+    flex-grow: 1;
+  }
 
-    header {
-      background-color: #034026;
-      color: white;
-      padding: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-    }
+  .welcome-box {
+    background-color: #e9f5e9;
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    position: relative;
+  }
 
-    .logo h1 {
-      margin: 0;
-      font-size: 26px;
-    }
+  .slideshow-quote {
+    font-size: 18px;
+    color: #05420f;
+    min-height: 60px;
+    margin-top: 15px;
+    transition: opacity 0.5s ease-in-out;
+  }
+</style>
 
-    nav ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      gap: 20px;
-    }
-
-    nav ul li a {
-      text-decoration: none;
-      color: white;
-      font-weight: bold;
-      transition: color 0.3s;
-    }
-
-    nav ul li a:hover {
-      color: #a8f0cf;
-    }
-
-    .sec_img {
-      background: url('library.jpg') no-repeat center center/cover;
-      flex-grow: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 60px 20px;
-    }
-
-    .box {
-      background-color: rgba(255, 255, 255, 0.95);
-      padding: 40px;
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-    }
-
-    .box h1 {
-      margin: 15px 0;
-      font-size: 24px;
-      color: #034026;
-    }
-
-    footer {
-      background-color: #034026;
-      color: white;
-      text-align: center;
-      padding: 20px;
-      font-size: 14px;
-    }
-  </style>
-</head>
-
-<body>
-  <div class="wrapper">
-    <header>
-      <div class="logo">
-        <h1>Online Library Management System</h1>
-      </div>
-      <nav>
-        <ul>
-          <li><a href="index.php">Home</a></li>
-          <li><a href="books.php">Books</a></li>
-          <li><a href="student_login.php">Student Login</a></li>
-          <li><a href="feedback.php">Feedback</a></li>
-        </ul>
-      </nav>
-    </header>
-
-    <section class="sec_img">
-      <div class="box">
-        <h1>Welcome to the Library</h1>
-        <h1>Opens at: 09:00</h1>
-        <h1>Closes at: 15:00</h1>
-      </div>
-    </section>
-
-    <footer>
-      <p>
-        Email: online.library@gmail.com<br>
-        Mobile: +88018********
-      </p>
-    </footer>
+<div class="welcome-container">
+  <div class="welcome-box">
+    <h1>Welcome to the Library</h1>
+    <div class="slideshow-quote" id="quoteBox">
+      📚 "A reader lives a thousand lives before he dies."
+    </div>
   </div>
-</body>
-</html>
+</div>
+
+<script>
+  const quotes = [
+    '📚 "A reader lives a thousand lives before he dies."',
+    '📖 "Today a reader, tomorrow a leader."',
+    '📘 "Reading is essential for those who seek to rise above the ordinary."',
+    '📗 "Books are a uniquely portable magic."',
+    '📕 "Libraries store the energy that fuels the imagination."'
+  ];
+
+  let current = 0;
+  const quoteBox = document.getElementById('quoteBox');
+
+  setInterval(() => {
+    current = (current + 1) % quotes.length;
+    quoteBox.style.opacity = 0;
+    setTimeout(() => {
+      quoteBox.textContent = quotes[current];
+      quoteBox.style.opacity = 1;
+    }, 300);
+  }, 4000); // changes every 4 seconds
+</script>
+
+<?php include 'footer.php'; ?>

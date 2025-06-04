@@ -1,168 +1,147 @@
-/* --- Reset and Normalize --- */
-html, body, div, span, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-abbr, address, cite, code,
-del, dfn, em, img, ins, kbd, q, samp,
-small, strong, sub, sup, var,
-b, i,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section, summary,
-time, mark, audio, video {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    outline: 0;
-    font-size: 100%;
-    vertical-align: baseline;
-    background: transparent;
-    font-family: Arial, sans-serif;
-}
-
 body {
-    line-height: 1;
-    background-color: #f4f4f4;
+  background-color: #c5d5c5;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-nav ul {
-    list-style: none;
-}
-
-a {
-    text-decoration: none;
-}
-
-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-}
-
-/* --- Layout Styling --- */
 header {
-    background-color: #003d1f;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  height: 90px;
+  background-color: #05420f;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 30px;
 }
 
-header .logo h1 {
-    color: white;
-    font-size: 24px;
-    margin-left: 20px;
+.logo h1 {
+  color: white;
+  font-size: 25px;
+  word-spacing: 10px;
+  margin: 0;
+  line-height: 90px;
 }
 
 nav ul {
-    display: flex;
-    gap: 30px;
-    margin-right: 30px;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 20px;
 }
 
 nav ul li a {
-    color: white;
-    font-weight: bold;
-    font-size: 16px;
-    transition: color 0.3s;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
 }
 
-nav ul li a:hover {
-    color: #dddddd;
-}
-
-section {
-    min-height: 500px;
-    background-color: #c8d9cc;
-    padding-top: 50px;
-}
-
-footer {
-    background-color: #003d1f;
-    color: white;
-    text-align: center;
-    padding: 20px 0;
-    font-size: 14px;
-    margin-top: auto;
-}
-
-/* --- User Login Box --- */
 .log_img {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 500px;
+  background-color: #c5d5c5;
+  padding: 50px 0;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .box1 {
-    width: 350px;
-    padding: 30px;
-    background-color: #e9f2ec;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
+  background-color: #e9f5e9;
+  padding: 30px 40px;
+  border-radius: 10px;
+  width: 350px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 .box1 h1 {
-    text-align: center;
-    color: #003d1f;
-    margin-bottom: 20px;
+  font-family: 'Lucida Console', monospace;
+  font-size: 25px;
+  margin-bottom: 10px;
+  color: #05420f;
+  text-align: center;
 }
 
-.login input[type="text"],
-.login input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #aaa;
-    border-radius: 5px;
-    font-size: 14px;
+.box1 h3 {
+  text-align: center;
+  font-size: 20px;
+  margin-bottom: 20px;
 }
 
-.login button {
-    width: 100%;
-    padding: 10px;
-    background-color: #2d6040;
-    color: white;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+.login input {
+  margin-bottom: 15px;
 }
 
-.login button:hover {
-    background-color: #1b3d29;
+.login input[type="submit"] {
+  width: 100%;
 }
 
-/* --- Forgot Password & Sign Up --- */
-.box1 p {
-    margin-top: 15px;
-    text-align: center;
-    font-size: 14px;
-    color: #003d1f;
+.links {
+  text-align: center;
+  margin-top: 15px;
 }
 
-.box1 p a {
-    display: block;
-    color: #003d1f;
-    margin-top: 5px;
+.links a {
+  color: #05420f;
+  text-decoration: none;
+  font-weight: bold;
 }
 
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    nav ul {
-        flex-direction: column;
-        align-items: flex-end;
-    }
+footer {
+  height: 90px;
+  background-color: #05420f;
+  color: white;
+  text-align: center;
+  line-height: 90px;
+  font-size: 14px;
+}
+.register-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
 
-    .box1 {
-        width: 90%;
-    }
+.register-box {
+  background-color: #e9f5e9;
+  padding: 30px 40px;
+  border-radius: 10px;
+  width: 400px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
 
-    header .logo h1 {
-        font-size: 18px;
-    }
+.register-box h2 {
+  font-size: 24px;
+  text-align: center;
+  color: #05420f;
+  margin-bottom: 20px;
+}
 
-    nav ul li a {
-        font-size: 14px;
-    }
+.register-box form {
+  display: flex;
+  flex-direction: column;
+}
+
+.register-box form input,
+.register-box form button {
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.register-box form button {
+  background-color: #05420f;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.register-box form button:hover {
+  background-color: #042e0a;
 }
