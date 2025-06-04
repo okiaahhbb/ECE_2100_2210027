@@ -1,3 +1,26 @@
+<?php
+include('connection.php');
+?>
+<?php
+if(isset($_POST['submit'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    // Check if the user exists in the database
+    $query = "SELECT * FROM student WHERE username='$username' AND password='$password'";
+    $result = mysqli_query($db, $query);
+
+    if(mysqli_num_rows($result) > 0) {
+        // User found, redirect to student dashboard
+        header("Location: student_dashboard.php");
+        exit();
+    } else {
+        // User not found, show error message
+        echo "<script>alert('Invalid username or password');</script>";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
