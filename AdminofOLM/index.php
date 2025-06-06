@@ -1,6 +1,6 @@
-<?php include 'header.php'; ?>
+<?php include 'Header.php'; ?>
 
-        <style>
+<style>
   body {
     background-color: #c5d5c5;
   }
@@ -63,4 +63,4 @@
   }, 4000); // changes every 4 seconds
 </script>
 
-<?php include 'footer.php'; ?>
+<?php include 'Footer.php'; ?>
