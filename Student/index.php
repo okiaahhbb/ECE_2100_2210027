@@ -1,4 +1,4 @@
-<?php include 'header.php'; ?>
+<?php include 'Header.php'; ?>
 
 <style>
   body {
@@ -63,4 +63,4 @@
   }, 4000); // changes every 4 seconds
 </script>
 
-<?php include 'footer.php'; ?>
+<?php include 'Footer.php'; ?>

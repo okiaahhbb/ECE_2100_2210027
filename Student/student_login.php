@@ -1,5 +1,5 @@
 <?php
-include('header.php');
+include('Header.php');
 include('connection.php');
 
 
@@ -24,7 +24,7 @@ if (isset($_POST['submit'])) {
 <div class="log_img">
   <div class="box1">
     <h1>Library Management System</h1>
-    <h3>User Login Form</h3>
+    <h3>Student Login Form</h3>
 
     <?php if (!empty($message)): ?>
       <div class="alert alert-danger" style="text-align: center;">
@@ -46,4 +46,4 @@ if (isset($_POST['submit'])) {
   </div>
 </div>
 
-<?php include('footer.php'); ?>
+<?php include('Footer.php'); ?>

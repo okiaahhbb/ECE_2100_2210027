@@ -1,6 +1,6 @@
 <?php include 'header.php'; ?>
 <?php
-include('connection.php'); // adjust path if needed
+include('connection.php'); 
 
 $books = [];
 $result = mysqli_query($db, "SELECT * FROM books");

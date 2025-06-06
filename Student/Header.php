@@ -11,6 +11,7 @@
 </head>
 <body>
 
+
 <header>
   <div class="logo">
     <h1>ONLINE LIBRARY MANAGEMENT SYSTEM</h1>
@@ -18,6 +19,7 @@
   <nav>
     <ul>
       <li><a href="index.php">Home</a></li>
+      <li><a href="dashboard.php">Dashboard</a></li>
       <li><a href="books.php">Books</a></li>
       <li><a href="student_login.php">Student Login</a></li>
       <li><a href="feedback.php">Feedback</a></li>

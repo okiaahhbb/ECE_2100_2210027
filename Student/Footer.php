@@ -1,6 +1,8 @@
-<footer>
-  Email: online.library@gmail.com | Mobile: +88018XXXXXXXX
-</footer>
-
+    </div> <!-- closes .main-content -->
+    <footer>
+      &copy; 2025 RUET Library. All rights reserved.
+    </footer>
+  </div> <!-- closes .page-container -->
 </body>
 </html>
+
