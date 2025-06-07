@@ -2,11 +2,10 @@
 <?php
 include('connection.php');
 
-// Initialize variables
+
 $search_query = "";
 $books = [];
 
-// Check if search form was submitted
 if (isset($_GET['search']) && !empty($_GET['search'])) {
     $search_query = mysqli_real_escape_string($db, $_GET['search']);
     $sql = "SELECT * FROM books WHERE 

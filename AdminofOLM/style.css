@@ -58,14 +58,14 @@ vertical-align:baseline;
 background:transparent;
 }
 
-/* change colours to suit your needs */
+
 ins {
 background-color:#ff9;
 color:#000;
 text-decoration:none;
 }
 
-/* change colours to suit your needs */
+
 mark {
 background-color:#ff9;
 color:#000; 
@@ -87,7 +87,7 @@ border-collapse:collapse;
 border-spacing:0;
 }
 
-/* change border colour to suit your needs */
+
 hr {
 display:block;
 height:1px;
@@ -292,7 +292,7 @@ footer {
   color: #2a3d2e;
 }
 
-/* Add these styles to your existing external CSS file */
+
 
 /* Login Page Styles */
 .log_img {

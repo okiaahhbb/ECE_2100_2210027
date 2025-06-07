@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         font-weight: bold;
     }
     
-    /* Popup Styles - Only changed the red line to green */
+
     .popup-overlay {
         position: fixed;
         top: 0;
@@ -137,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     .popup-error {
-        border-top: 4px solid #4CAF50; /* Changed from red to green */
+        border-top: 4px solid #4CAF50; 
     }
     
     .popup-btn {
