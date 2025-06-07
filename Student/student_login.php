@@ -1,4 +1,6 @@
 <?php
+session_start();  
+
 include('Header.php');
 include('connection.php');
 
@@ -12,6 +14,8 @@ if (isset($_POST['submit'])) {
     $result = mysqli_query($db, $query);
 
     if (mysqli_num_rows($result) > 0) {
+        $user = mysqli_fetch_assoc($result);
+        $_SESSION['username'] = $user['username'];  
         header("Location: student_dashboard.php");
         exit();
     } else {

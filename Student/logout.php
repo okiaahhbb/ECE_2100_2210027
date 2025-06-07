@@ -1,6 +1,13 @@
 <?php
 session_start();
+
+// Clear all session variables
+$_SESSION = array();
+
+// Destroy the session
 session_destroy();
-header("Location: login.php");
+
+// Redirect to homepage
+header("Location: index.php");  // Change to your actual homepage file
 exit();
 ?>
