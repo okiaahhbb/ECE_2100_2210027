@@ -10,27 +10,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
     $username = $_POST['username'];
     $password = $_POST['password'];
-    $roll = $_POST['roll'];
     $email = $_POST['email'];
-    $phone = $_POST['phone'];
 
-    $check_query = "SELECT * FROM student WHERE username='$username' OR roll='$roll' OR email='$email'";
+    $check_query = "SELECT * FROM admin WHERE username='$username' OR email='$email'";
     $check_result = mysqli_query($db, $check_query);
 
     if (mysqli_num_rows($check_result) > 0) {
         $row = mysqli_fetch_assoc($check_result);
         if ($row['username'] === $username) {
             $message = "Username already exists!";
-        } elseif ($row['roll'] === $roll) {
-            $message = "Roll number already exists!";
         } elseif ($row['email'] === $email) {
             $message = "Email already exists!";
         }
         $alertClass = "danger";
         $showPopup = true;
     } else {
-        $insert_query = "INSERT INTO student (name, username, password, roll, email, phone) 
-                       VALUES ('$name', '$username', '$password', '$roll', '$email', '$phone')";
+        $insert_query = "INSERT INTO admin (name, username, password, email) 
+                       VALUES ('$name', '$username', '$password', '$email')";
         
         if (mysqli_query($db, $insert_query)) {
             $message = "Registration successful!";
@@ -153,18 +149,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div class="register-container">
   <div class="register-box">
-    <h2>User Registration</h2>
+    <h2>Admin Registration</h2>
     <form action="" method="POST">
-      <input type="text" name="name" placeholder="Name" value="<?= isset($_POST['name']) ? htmlspecialchars($_POST['name']) : '' ?>" required>
+      <input type="text" name="name" placeholder="Full Name" value="<?= isset($_POST['name']) ? htmlspecialchars($_POST['name']) : '' ?>" required>
       <input type="text" name="username" placeholder="Username" value="<?= isset($_POST['username']) ? htmlspecialchars($_POST['username']) : '' ?>" required>
       <input type="password" name="password" placeholder="Password" required>
-      <input type="text" name="roll" placeholder="Roll No" value="<?= isset($_POST['roll']) ? htmlspecialchars($_POST['roll']) : '' ?>" required>
       <input type="email" name="email" placeholder="Email" value="<?= isset($_POST['email']) ? htmlspecialchars($_POST['email']) : '' ?>" required>
-      <input type="text" name="phone" placeholder="Phone No" value="<?= isset($_POST['phone']) ? htmlspecialchars($_POST['phone']) : '' ?>" required>
-      <button type="submit" name="submit">Sign Up</button>
+      <button type="submit" name="submit">Register</button>
     </form>
     <div class="links">
-      Already registered? <a href="student_login.php">Login</a>
+      Already have an account? <a href="admin_login.php">Login</a>
     </div>
   </div>
 </div>
