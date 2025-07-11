@@ -1,35 +1,43 @@
 <?php include 'Header.php'; ?>
 <?php include 'connection.php'; ?>
 
-<link rel="stylesheet" href="style.css"> 
+<link rel="stylesheet" href="style.css">
 
 <div class="feedback-container">
   <div class="feedback-box">
-    <h2>📝 Feedback</h2>
-    <p>If you have any suggestions or questions, please comment below.</p>
+    <h2>📢 Admin Feedback Panel</h2>
 
-    <form action="" method="post">
-      <input class="form-control" type="text" name="comment" placeholder="Write something..." required><br>
-      <button class="btn btn-submit btn-block" type="submit" name="submit">Comment</button>
-    </form>
+    <?php
+      if (isset($_POST['reply_submit'])) {
+        $id = $_POST['feedback_id'];
+        $reply = mysqli_real_escape_string($db, $_POST['reply']);
+        $update = "UPDATE feedback SET reply='$reply' WHERE id=$id";
+        mysqli_query($db, $update);
+      }
 
-    <div class="scroll">
-      <?php
-        if (isset($_POST['submit'])) {
-          $comment = mysqli_real_escape_string($db, $_POST['comment']);
-          $sql = "INSERT INTO `feedback` (comment) VALUES ('$comment')";
-          mysqli_query($db, $sql);
+      $res = mysqli_query($db, "SELECT * FROM feedback ORDER BY id DESC");
+
+      while ($row = mysqli_fetch_assoc($res)) {
+        echo "<div class='comment-row'>";
+        echo "<strong>📌 " . htmlspecialchars($row['comment']) . "</strong><br>";
+
+        if (!empty($row['reply'])) {
+          echo "<span style='color:green; margin-left:20px;'>↪ Admin: " . htmlspecialchars($row['reply']) . "</span><br>";
+        } else {
+          echo "
+            <form method='post'>
+              <input type='hidden' name='feedback_id' value='{$row['id']}'>
+              <input class='form-control' type='text' name='reply' placeholder='Write reply...' required>
+              <button class='btn-submit' type='submit' name='reply_submit'>Reply</button>
+            </form>
+          ";
         }
 
-        $q = "SELECT * FROM `feedback` ORDER BY id DESC"; // This assumes `id` exists in the table
-        $res = mysqli_query($db, $q);
-
-        while ($row = mysqli_fetch_assoc($res)) {
-          echo "<div class='comment-row'>📌 " . htmlspecialchars($row['comment']) . "</div>";
-        }
-      ?>
-    </div>
+        echo "</div>";
+      }
+    ?>
   </div>
 </div>
 
 <?php include 'Footer.php'; ?>
+

@@ -17,15 +17,19 @@
       <?php
         if (isset($_POST['submit'])) {
           $comment = mysqli_real_escape_string($db, $_POST['comment']);
-          $sql = "INSERT INTO `feedback` (comment) VALUES ('$comment')";
+          $sql = "INSERT INTO feedback (comment) VALUES ('$comment')";
           mysqli_query($db, $sql);
         }
 
-        $q = "SELECT * FROM `feedback` ORDER BY id DESC"; // This assumes `id` exists in the table
-        $res = mysqli_query($db, $q);
+        $res = mysqli_query($db, "SELECT * FROM feedback ORDER BY id DESC");
 
         while ($row = mysqli_fetch_assoc($res)) {
-          echo "<div class='comment-row'>📌 " . htmlspecialchars($row['comment']) . "</div>";
+          echo "<div class='comment-row'>";
+          echo "📌 <strong>" . htmlspecialchars($row['comment']) . "</strong><br>";
+          if (!empty($row['reply'])) {
+            echo "<span style='color:green; margin-left:20px;'>↪ Admin: " . htmlspecialchars($row['reply']) . "</span>";
+          }
+          echo "</div>";
         }
       ?>
     </div>
@@ -33,3 +37,4 @@
 </div>
 
 <?php include 'Footer.php'; ?>
+

@@ -378,3 +378,13 @@ footer {
   border-radius: 4px;
   text-align: center;
 }
+
+.comment-row {
+  padding: 15px;
+  border-bottom: 1px solid #ccc;
+  margin-top: 10px;
+  background-color: #fefefe;
+}
+.comment-row strong {
+  color: #2a3d2e;
+}
