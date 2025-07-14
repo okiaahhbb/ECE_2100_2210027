@@ -47,7 +47,7 @@ if(isset($_POST['login'])) {
     }
 
     .login-container {
-        width: 400px;
+        width: 450px;
         padding: 30px;
         background-color: #ffffff;
         border-radius: 10px;

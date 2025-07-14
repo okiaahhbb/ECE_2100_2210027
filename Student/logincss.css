@@ -1,0 +1,154 @@
+/* ========== ROOT VARIABLES ========== */
+:root {
+  --primary-green: #2a5934;
+  --primary-light: #e8f3e8;
+  --primary-dark: #1c3d24;
+  --accent-color: #4a8c5e;
+  --text-dark: #1a2e22;
+  --text-light: #5a7260;
+  --white: #ffffff;
+  --shadow-sm: 0 2px 8px rgba(42, 89, 52, 0.1);
+  --shadow-md: 0 4px 12px rgba(42, 89, 52, 0.15);
+}
+
+/* ========== RESET & BASE ========== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
+
+body {
+  background: var(--primary-dark);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* ========== CONTAINER ========== */
+.container {
+  display: flex;
+  width: 90%;
+  max-width: 1000px;
+  height: 600px;
+  background: var(--primary-green);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+/* ========== LEFT PANEL ========== */
+.left-panel {
+  flex: 1;
+  background: var(--primary-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.svg-placeholder img {
+  width: 80%;
+  max-width: 350px;
+}
+
+.credit {
+  position: absolute;
+  bottom: 15px;
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+/* ========== RIGHT PANEL ========== */
+.right-panel {
+  flex: 1;
+  background: var(--primary-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-box {
+  width: 80%;
+  max-width: 350px;
+  padding: 20px;
+  color: var(--white);
+}
+
+/* ========== FORM ELEMENTS ========== */
+.login-box h2.centered {
+  margin-bottom: 20px;
+  text-align: center;
+  color: var(--primary-light);
+}
+
+.login-box label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 500;
+  color: var(--text-light);
+}
+
+.login-box input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 8px;
+  border: 1px solid var(--accent-color);
+  background: var(--primary-green);
+  color: var(--white);
+}
+
+.login-box input::placeholder {
+  color: #cbe5d1;
+}
+
+/* ========== LINK ROW ========== */
+.link-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.link-row a {
+  color: #98f3b9;
+  text-decoration: none;
+}
+
+/* ========== BUTTON ========== */
+.login-box button {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent-color);
+  border: none;
+  color: white;
+  border-radius: 8px;
+  margin-top: 20px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: background 0.3s ease;
+}
+
+.login-box button:hover {
+  background: #3c7c52;
+}
+
+/* ========== FOOTER LINKS ========== */
+.register,
+.contact {
+  margin-top: 15px;
+  font-size: 13px;
+  color: var(--primary-light);
+  text-align: center;
+}
+
+.register a,
+.contact a {
+  color: #afffd2;
+  text-decoration: none;
+}

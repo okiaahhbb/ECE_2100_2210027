@@ -1,0 +1,117 @@
+:root {
+  --primary-green: #2a5934;
+  --primary-light: #e8f3e8;
+  --primary-dark: #1c3d24;
+  --accent-color: #4a8c5e;
+  --text-dark: #1a2e22;
+  --text-light: #5a7260;
+  --white: #ffffff;
+  --shadow-sm: 0 2px 8px rgba(42, 89, 52, 0.1);
+  --shadow-md: 0 4px 12px rgba(42, 89, 52, 0.15);
+}
+
+body.bookstore-body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  background-color: var(--primary-light);
+  color: var(--text-dark);
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 5%;
+  background-color: var(--white);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--primary-green);
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--primary-green);
+  padding: 8px 15px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+  background-color: var(--primary-green);
+  color: var(--white);
+  box-shadow: var(--shadow-md);
+}
+
+/* Section Layout */
+.popular {
+  padding: 60px 5%;
+}
+
+.popular-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.popular-header h2 {
+  font-size: 24px;
+  color: var(--primary-dark);
+}
+
+/* Book Grid */
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 25px;
+}
+
+.book {
+  background-color: var(--white);
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 1px solid var(--primary-light);
+}
+
+.book:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.book img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  height: 180px;
+  object-fit: contain;
+  background: #f5f5f5;
+}
+
+.book h4 {
+  margin: 0;
+  font-size: 16px;
+  color: var(--text-dark);
+}
+
+.book p {
+  font-size: 14px;
+  color: var(--text-light);
+  margin: 5px 0;
+}

@@ -1,188 +1,383 @@
 <?php
-include 'header.php';
-include('connection.php');
+session_start();
 
-$message = "";
-$alertClass = "";
-$showPopup = false;
+$servername = "localhost";
+$dbusername = "root";
+$dbpassword = "";
+$dbname = "booksy";
+
+$conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+$alert_message = "";
+$alert_type = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name = $_POST['name'];
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $roll = $_POST['roll'];
-    $email = $_POST['email'];
-    $phone = $_POST['phone'];
+    $full_name = trim($_POST['full_name'] ?? '');
+    $username = trim($_POST['username'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
+    $department = trim($_POST['department'] ?? '');
+    $roll = trim($_POST['roll'] ?? '');
+    $password = $_POST['password'] ?? '';
 
-    $check_query = "SELECT * FROM student WHERE username='$username' OR roll='$roll' OR email='$email'";
-    $check_result = mysqli_query($db, $check_query);
-
-    if (mysqli_num_rows($check_result) > 0) {
-        $row = mysqli_fetch_assoc($check_result);
-        if ($row['username'] === $username) {
-            $message = "Username already exists!";
-        } elseif ($row['roll'] === $roll) {
-            $message = "Roll number already exists!";
-        } elseif ($row['email'] === $email) {
-            $message = "Email already exists!";
-        }
-        $alertClass = "danger";
-        $showPopup = true;
+    if (!$full_name || !$username || !$email || !$roll || !$password) {
+        $alert_message = "Please fill all required fields.";
+        $alert_type = "fail";
     } else {
-        $insert_query = "INSERT INTO student (name, username, password, roll, email, phone) 
-                       VALUES ('$name', '$username', '$password', '$roll', '$email', '$phone')";
-        
-        if (mysqli_query($db, $insert_query)) {
-            $message = "Registration successful!";
-            $alertClass = "success";
-            $showPopup = true;
-            $_POST = array(); // Clear form
+        $check_stmt = $conn->prepare("SELECT COUNT(*) FROM students WHERE username=? OR roll=? OR email=?");
+        $check_stmt->bind_param("sss", $username, $roll, $email);
+        $check_stmt->execute();
+        $check_stmt->bind_result($count);
+        $check_stmt->fetch();
+        $check_stmt->close();
+
+        if ($count > 0) {
+            $alert_message = "Username, Roll, or Email already exists. Please try another.";
+            $alert_type = "fail";
         } else {
-            $message = "Error: " . mysqli_error($db);
-            $alertClass = "danger";
-            $showPopup = true;
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+            $insert_stmt = $conn->prepare("INSERT INTO students (full_name, roll, username, password, department, phone, email) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $insert_stmt->bind_param("sssssss", $full_name, $roll, $username, $hashed_password, $department, $phone, $email);
+
+            if ($insert_stmt->execute()) {
+                $alert_message = "Registration successful! You can now login.";
+                $alert_type = "success";
+                // Clear form values after success
+                $full_name = $username = $email = $phone = $department = $roll = '';
+            } else {
+                $alert_message = "Error during registration: " . $conn->error;
+                $alert_type = "fail";
+            }
+            $insert_stmt->close();
         }
     }
 }
+
+$conn->close();
 ?>
 
-<style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Register</title>
+  <style>
+    /* Root colors */
+    :root {
+      --primary-green: #2a5934;
+      --primary-light: #e8f3e8;
+      --primary-dark: #1c3d24;
+      --accent-color: #4a8c5e;
+      --text-dark: #1a2e22;
+      --text-light: #5a7260;
+      --white: #ffffff;
+      --shadow-sm: 0 2px 8px rgba(42, 89, 52, 0.1);
+      --shadow-md: 0 4px 12px rgba(42, 89, 52, 0.15);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", sans-serif;
+    }
+
     body {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        margin: 0;
-        padding: 0;
-        background-color: #c5d5c5;
-        overflow-y: hidden;
-        font-family: Arial, sans-serif;
+      background: var(--primary-dark);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
-    
-    .register-container {
-        flex: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-    }
-    
-    .register-box {
-        width: 400px;
-        padding: 30px;
-        background-color: #e9f5e9;
-        border-radius: 10px;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-        text-align: center;
-    }
-    
-    .register-box h2 {
-        color: #05420f;
-        margin-bottom: 20px;
-    }
-    
-    .register-box input {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 15px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
-    
-    .register-box button {
-        width: 100%;
-        padding: 10px;
-        background-color: #05420f;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    
-    .links {
-        margin-top: 15px;
-        text-align: center;
-    }
-    
-    .links a {
-        color: #05420f;
-        text-decoration: none;
-        font-weight: bold;
-    }
-    
 
-    .popup-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0,0,0,0.5);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
+    /* Navbar */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: var(--primary-green);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 30px;
+      color: var(--white);
+      font-weight: 600;
+      z-index: 999;
     }
-    
-    .popup-content {
-        background: white;
-        padding: 25px;
-        border-radius: 8px;
-        width: 300px;
-        text-align: center;
-        box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    .navbar .logo {
+      font-size: 24px;
     }
-    
-    .popup-success {
-        border-top: 4px solid #4CAF50;
+    .nav-links a {
+      color: var(--white);
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: 500;
+      transition: color 0.3s ease;
     }
-    
-    .popup-error {
-        border-top: 4px solid #4CAF50; 
+    .nav-links a:hover {
+      color: var(--accent-color);
     }
-    
-    .popup-btn {
-        margin-top: 15px;
-        padding: 8px 20px;
-        background: #05420f;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-</style>
 
-<div class="register-container">
-  <div class="register-box">
-    <h2>User Registration</h2>
-    <form action="" method="POST">
-      <input type="text" name="name" placeholder="Name" value="<?= isset($_POST['name']) ? htmlspecialchars($_POST['name']) : '' ?>" required>
-      <input type="text" name="username" placeholder="Username" value="<?= isset($_POST['username']) ? htmlspecialchars($_POST['username']) : '' ?>" required>
-      <input type="password" name="password" placeholder="Password" required>
-      <input type="text" name="roll" placeholder="Roll No" value="<?= isset($_POST['roll']) ? htmlspecialchars($_POST['roll']) : '' ?>" required>
-      <input type="email" name="email" placeholder="Email" value="<?= isset($_POST['email']) ? htmlspecialchars($_POST['email']) : '' ?>" required>
-      <input type="text" name="phone" placeholder="Phone No" value="<?= isset($_POST['phone']) ? htmlspecialchars($_POST['phone']) : '' ?>" required>
-      <button type="submit" name="submit">Sign Up</button>
-    </form>
-    <div class="links">
-      Already registered? <a href="student_login.php">Login</a>
+    /* Container */
+    .container {
+      margin-top: 70px; /* for navbar space */
+      display: flex;
+      width: 90%;
+      max-width: 1000px;
+      height: 600px;
+      background: var(--primary-green);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+
+    /* Left Panel (SVG) */
+    .left-panel {
+      flex: 1;
+      background: var(--primary-light);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .svg-placeholder img {
+      width: 80%;
+      max-width: 350px;
+    }
+    .credit {
+      position: absolute;
+      bottom: 15px;
+      font-size: 12px;
+      color: var(--text-light);
+    }
+
+    /* Right Panel (Form) */
+    .right-panel {
+      flex: 1;
+      background: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-box {
+      width: 80%;
+      max-width: 370px;
+      padding: 20px;
+      color: var(--white);
+    }
+
+    .login-box h2.centered {
+      margin-bottom: 20px;
+      text-align: center;
+      color: var(--primary-light);
+    }
+
+    .login-box label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 500;
+      color: var(--text-light);
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: 1px solid var(--accent-color);
+      background: var(--primary-green);
+      color: var(--white);
+    }
+
+    .login-box input::placeholder {
+      color: #cbe5d1;
+    }
+
+    .login-box button {
+      width: 100%;
+      padding: 12px;
+      background: var(--accent-color);
+      border: none;
+      color: white;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: background 0.3s ease;
+    }
+
+    .login-box button:hover {
+      background: #3c7c52;
+    }
+
+    .register,
+    .contact {
+      margin-top: 15px;
+      font-size: 13px;
+      color: var(--primary-light);
+      text-align: center;
+    }
+
+    .register a,
+    .contact a {
+      color: #afffd2;
+      text-decoration: none;
+    }
+
+
+    /* Modal styles */
+    #modalOverlay {
+      display: none;
+      position: fixed;
+      z-index: 10000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    #modalBox {
+      background-color: #fff;
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+      max-width: 400px;
+      text-align: center;
+      font-family: Arial, sans-serif;
+      position: relative;
+      color: #222; /* dark text */
+    }
+    #modalBox.success {
+      border-left: 6px solid #4CAF50;
+      color: #2a5934; /* dark green */
+    }
+    #modalBox.fail {
+      border-left: 6px solid #f44336;
+      color: #a80000; /* dark red */
+    }
+    #modalCloseBtn {
+      position: absolute;
+      top: 8px; right: 12px;
+      font-size: 22px;
+      font-weight: bold;
+      color: #333;
+      cursor: pointer;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo">📘 Booksy</div>
+    <div class="nav-links">
+      <a href="index.php">Home</a>
+      <a href="collection.php">Collections</a>
+      <a href="login.php">Login</a>
+      <a href="feedback.php">Feedback</a>
     </div>
   </div>
-</div>
 
-<?php if ($showPopup): ?>
-<div class="popup-overlay">
-  <div class="popup-content <?= $alertClass === 'success' ? 'popup-success' : 'popup-error' ?>">
-    <h3><?= $message ?></h3>
-    <button class="popup-btn" onclick="this.parentElement.parentElement.style.display='none'">OK</button>
+  <div class="container">
+    <div class="right-panel">
+      <div class="login-box">
+        <h2 class="centered">Create Account</h2>
+
+        <form action="" method="POST" id="registrationForm">
+
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="full_name" placeholder="Enter your full name" required
+            value="<?php echo htmlspecialchars($full_name ?? '') ?>" />
+
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" placeholder="Choose a username" required
+            value="<?php echo htmlspecialchars($username ?? '') ?>" />
+
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="Enter your email" required
+            value="<?php echo htmlspecialchars($email ?? '') ?>" />
+
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="phone" placeholder="Enter your phone number"
+            value="<?php echo htmlspecialchars($phone ?? '') ?>" />
+
+          <label for="dept">Department</label>
+          <input type="text" id="dept" name="department" placeholder="e.g., CSE, EEE, ME"
+            value="<?php echo htmlspecialchars($department ?? '') ?>" />
+
+          <label for="roll">Roll Number</label>
+          <input type="text" id="roll" name="roll" placeholder="Enter your roll number" required
+            value="<?php echo htmlspecialchars($roll ?? '') ?>" />
+
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Create a password" required />
+
+          <button type="submit">Register</button>
+        </form>
+
+        <p class="register">Already have an account? <a href="login.php">Login Here</a></p>
+        <p class="contact">
+          Need help? <br />
+          <a href="mailto:support@ruet.edu.bd">support@ruet.edu.bd</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="left-panel">
+      <div class="svg-placeholder">
+        <img src="Images/registration.svg" alt="Illustration" />
+      </div>
+      <p class="credit">© 2025 RUET Library</p>
+    </div>
   </div>
-</div>
-<script>
-    <?php if ($alertClass === 'success'): ?>
-    setTimeout(function(){
-        document.querySelector('.popup-overlay').style.display = 'none';
-    }, 3000);
-    <?php endif; ?>
-</script>
-<?php endif; ?>
 
-<?php include 'footer.php'; ?>
+  <!-- Modal Popup -->
+  <div id="modalOverlay">
+    <div id="modalBox" class="<?php echo htmlspecialchars($alert_type); ?>">
+      <div id="modalCloseBtn">&times;</div>
+      <p><?php echo htmlspecialchars($alert_message); ?></p>
+    </div>
+  </div>
+
+  <script>
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+    <?php if ($alert_message): ?>
+      // Show modal
+      modalOverlay.style.display = 'flex';
+
+      // Close modal on clicking X
+      modalCloseBtn.addEventListener('click', () => {
+        modalOverlay.style.display = 'none';
+      });
+
+      // Also close modal on clicking outside modalBox
+      modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) {
+          modalOverlay.style.display = 'none';
+        }
+      });
+    <?php endif; ?>
+  </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
