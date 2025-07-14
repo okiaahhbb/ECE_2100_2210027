@@ -2,41 +2,44 @@
 session_start();
 include '../db_connect.php';
 
-// Check login status (just to allow feedback form for logged-in users)
-$isLoggedIn = isset($_SESSION['student_id']);
-
 $submitMsg = '';
 
 // Handle feedback submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $isLoggedIn) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $feedback = trim($_POST['feedback'] ?? '');
     $is_anonymous = isset($_POST['anonymous']) ? 1 : 0;
     $name = trim($_POST['name'] ?? '');
 
     if ($is_anonymous) {
         $name = "Anonymous";
+    } elseif (empty($name)) {
+        $name = "Guest";
     }
 
-    if ($feedback !== '' && $name !== '') {
+    if (!empty($feedback)) {
         $stmt = $conn->prepare("INSERT INTO feedbacks (name, feedback, is_anonymous) VALUES (?, ?, ?)");
         $stmt->bind_param("ssi", $name, $feedback, $is_anonymous);
+        
         if ($stmt->execute()) {
             $submitMsg = "Thank you for your feedback!";
+            // Clear form after successful submission
+            $_POST = array();
         } else {
             $submitMsg = "Failed to submit feedback. Please try again.";
         }
         $stmt->close();
     } else {
-        $submitMsg = "Please fill in all required fields.";
+        $submitMsg = "Please write your feedback before submitting.";
     }
 }
 
 // Fetch feedbacks
-$sql = "SELECT name, feedback FROM feedbacks ORDER BY created_at DESC";
+$sql = "SELECT name, feedback FROM feedbacks ORDER BY created_at DESC LIMIT 6";
 $result = $conn->query($sql);
 
 $svgImages = ['Images/Person1.svg', 'Images/Person2.svg', 'Images/Person3.svg'];
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -265,6 +268,15 @@ $svgImages = ['Images/Person1.svg', 'Images/Person2.svg', 'Images/Person3.svg'];
       border-radius: 10px;
       user-select: none;
     }
+    .anonymous-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: white;
+    }
+    .anonymous-option input {
+      width: auto;
+    }
   </style>
 </head>
 <body>
@@ -283,21 +295,25 @@ $svgImages = ['Images/Person1.svg', 'Images/Person2.svg', 'Images/Person3.svg'];
     <h1>We appreciate your feedback 📝</h1>
     <p>Your thoughts help us improve and grow. Feel free to share anything!</p>
 
-    <?php if (!$isLoggedIn): ?>
-      <p style="color:#c2efca; font-weight:600; background:#1c3d24; padding:12px; border-radius:8px;">
-        Please <a href="../Student/login.php" style="color:#e8f3e8; text-decoration:underline;">login</a> to give feedback.
-      </p>
-    <?php else: ?>
-      <?php if ($submitMsg): ?>
-        <p class="message"><?php echo htmlspecialchars($submitMsg); ?></p>
-      <?php endif; ?>
-      <form method="POST" action="feedback.php">
-        <input type="text" name="name" placeholder="Enter your name" required />
-        <label><input type="checkbox" name="anonymous" value="1" onchange="toggleNameInput(this)" /> Submit as anonymous</label>
-        <textarea name="feedback" maxlength="200" placeholder="Write your feedback here..." required></textarea>
-        <button type="submit">Send Feedback</button>
-      </form>
+    <?php if ($submitMsg): ?>
+      <p class="message"><?php echo htmlspecialchars($submitMsg); ?></p>
     <?php endif; ?>
+    
+    <form method="POST" action="feedback.php">
+      <input type="text" name="name" placeholder="Enter your name (optional)" 
+             value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>" />
+      <label class="anonymous-option">
+        <input type="checkbox" name="anonymous" value="1" 
+               <?php echo isset($_POST['anonymous']) ? 'checked' : ''; ?> 
+               onchange="toggleNameInput(this)" />
+        Submit anonymously
+      </label>
+      <textarea name="feedback" maxlength="200" 
+                placeholder="Write your feedback here..." required><?php 
+                echo htmlspecialchars($_POST['feedback'] ?? ''); 
+                ?></textarea>
+      <button type="submit">Send Feedback</button>
+    </form>
   </div>
 
   <div class="feedback-right">
@@ -336,10 +352,11 @@ function toggleNameInput(checkbox) {
   const input = document.querySelector('input[name="name"]');
   if (checkbox.checked) {
     input.disabled = true;
-    input.value = 'Anonymous';
+    input.placeholder = "Will show as Anonymous";
+    input.value = '';
   } else {
     input.disabled = false;
-    input.value = '';
+    input.placeholder = "Enter your name (optional)";
   }
 }
 
