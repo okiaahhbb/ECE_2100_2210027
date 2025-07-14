@@ -1,0 +1,229 @@
+/* ================ ROOT VARIABLES ================ */
+:root {
+  /* Color Palette */
+  --primary-green: #2a5934;
+  --primary-light: #e8f3e8;
+  --primary-dark: #1c3d24;
+  --accent-color: #4a8c5e;
+  --text-dark: #1a2e22;
+  --text-light: #5a7260;
+  --white: #ffffff;
+  --shadow-sm: 0 2px 8px rgba(42, 89, 52, 0.1);
+  --shadow-md: 0 4px 12px rgba(42, 89, 52, 0.15);
+  
+  /* Login Specific */
+  --login-light: #c2efca;
+  --login-accent: #98f3b9;
+}
+
+/* ================ BASE STYLES ================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+  color: var(--text-dark);
+}
+
+/* ================ BOOKSTORE STYLES ================ */
+.bookstore-body {
+  background-color: var(--primary-light);
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 5%;
+  background-color: var(--white);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--primary-green);
+  user-select: none;
+}
+
+.search {
+  flex-grow: 1;
+  max-width: 450px;
+  margin: 0 25px;
+  padding: 10px 15px;
+  border-radius: 25px;
+  border: 2px solid var(--primary-green);
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.search:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 8px var(--accent-color);
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--primary-green);
+  padding: 8px 15px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+  background-color: var(--primary-green);
+  color: var(--white);
+  box-shadow: var(--shadow-md);
+}
+
+/* Hero Section */
+.hero-green {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 60px 5% 80px;
+  background-color: var(--primary-green);
+  color: var(--white);
+  position: relative;
+  overflow: hidden;
+  clip-path: ellipse(100% 100% at 50% 0%);
+}
+
+.hero-text {
+  flex: 1;
+  max-width: 50%;
+  animation: fadeInLeft 1s ease-in-out;
+}
+
+.hero-text h1 {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.hero-text p {
+  font-size: 16px;
+  margin-bottom: 25px;
+  color: rgba(255,255,255,0.9);
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  
+}
+
+.hero-animate-btn {
+  background-color: var(--white);
+  color: var(--primary-green);
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+}
+
+.hero-animate-btn:hover {
+  background-color: var(--login-light);
+  transform: scale(1.05) translateY(-2px);
+}
+
+.hero-float-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  animation: fadeInRight 1s ease-in-out;
+}
+
+.hero-float-image img {
+  max-width: 300px;
+  width: 100%;
+  animation: floatBook 4s ease-in-out infinite;
+}
+
+/* Book Grid */
+.popular {
+  padding: 60px 5%;
+}
+
+.popular-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.popular-header h2 {
+  font-size: 24px;
+  color: var(--primary-dark);
+}
+
+.popular-header a {
+  color: var(--primary-green);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 25px;
+}
+
+.book {
+  background-color: var(--white);
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 1px solid var(--primary-light);
+}
+
+.book:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.book img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  height: 180px;
+  object-fit: contain;
+  background: #f5f5f5;
+}
+
+.book h4 {
+  margin: 0;
+  font-size: 16px;
+  color: var(--text-dark);
+}
+
+.book p {
+  font-size: 14px;
+  color: var(--text-light);
+  margin: 5px 0;
+}
+
+.book-rating {
+  color: #FFD700;
+  font-size: 14px;
+  margin-top: 8px;
+}

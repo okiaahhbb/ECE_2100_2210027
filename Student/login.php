@@ -1,48 +1,64 @@
 <?php
 session_start();
 
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 $servername = "localhost";
 $dbusername = "root";
 $dbpassword = "";
 $dbname = "booksy";
 
+// Create connection
 $conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
 if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
+    die("Connection failed: " . $conn->connect_error);
 }
 
 $alert_message = "";
 $alert_type = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $username = trim($_POST['username'] ?? '');
-  $password = $_POST['password'] ?? '';
+    $username = trim($_POST['username'] ?? '');
+    $password = $_POST['password'] ?? '';
 
-  if (!$username || !$password) {
-    $alert_message = "Please enter both username and password.";
-    $alert_type = "fail";
-  } else {
-    $stmt = $conn->prepare("SELECT password FROM students WHERE username = ?");
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $stmt->bind_result($hashed_password);
-    if ($stmt->fetch()) {
-      if (password_verify($password, $hashed_password)) {
-        $_SESSION['username'] = $username;
-        header("Location: dashboard.php");
-        exit;
-      } else {
-        $alert_message = "Incorrect password.";
+    if (empty($username) || empty($password)) {
+        $alert_message = "Please enter both username and password.";
         $alert_type = "fail";
-      }
     } else {
-      $alert_message = "Username not found.";
-      $alert_type = "fail";
+        // Prepare statement to prevent SQL injection
+        $stmt = $conn->prepare("SELECT student_id, username, full_name, roll, department, password FROM students WHERE username = ?");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows === 1) {
+            $user = $result->fetch_assoc();
+            
+            // Verify password
+            if (password_verify($password, $user['password'])) {
+                // Set session variables
+                $_SESSION['student_id'] = $user['student_id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['full_name'] = $user['full_name'];
+                $_SESSION['roll'] = $user['roll'];
+                $_SESSION['department'] = $user['department'];
+                
+                // Redirect to dashboard
+                header("Location: dashboard.php");
+                exit();
+            } else {
+                $alert_message = "Incorrect password.";
+                $alert_type = "fail";
+            }
+        } else {
+            $alert_message = "Username not found.";
+            $alert_type = "fail";
+        }
+        $stmt->close();
     }
-    $stmt->close();
-  }
 }
-
 $conn->close();
 ?>
 
@@ -51,93 +67,190 @@ $conn->close();
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login</title>
-  <link rel="stylesheet" href="logincss.css" />
+  <title>Login - Booksy</title>
   <style>
-    #modalOverlay {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.5);
+    :root {
+      --primary-green: #2a5934;
+      --primary-light: #e8f3e8;
+      --primary-dark: #1c3d24;
+      --accent-color: #4a8c5e;
+      --text-dark: #1a2e22;
+      --white: #ffffff;
+      --shadow-sm: 0 2px 8px rgba(42, 89, 52, 0.1);
+      --radius: 8px;
+    }
+    
+    body {
+      background-color: var(--primary-dark);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    
+    .container {
+      display: flex;
+      width: 90%;
+      max-width: 1000px;
+      background-color: var(--primary-green);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .left-panel {
+      flex: 1;
+      background-color: var(--primary-light);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .left-panel img {
+      max-width: 100%;
+      height: auto;
+    }
+    
+    .right-panel {
+      flex: 1;
+      padding: 40px;
+      display: flex;
       justify-content: center;
       align-items: center;
     }
-
+    
+    .login-box {
+      width: 100%;
+      max-width: 350px;
+      color: var(--white);
+    }
+    
+    .login-box h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: var(--primary-light);
+    }
+    
+    .login-box input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: var(--radius);
+      border: 1px solid var(--accent-color);
+      background-color: var(--primary-dark);
+      color: var(--white);
+    }
+    
+    .login-box button {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--accent-color);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+    
+    .login-box button:hover {
+      background-color: #3c7c52;
+    }
+    
+    .link-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 15px 0;
+      font-size: 14px;
+    }
+    
+    .link-row a {
+      color: var(--primary-light);
+      text-decoration: none;
+    }
+    
+    .register {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    
+    .register a {
+      color: #afffd2;
+      text-decoration: none;
+    }
+    
+    /* Modal Styles */
+    #modalOverlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    
     #modalBox {
-      background-color: #fff;
+      background-color: var(--white);
       padding: 25px 30px;
       border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.25);
       max-width: 400px;
       text-align: center;
-      color: #222;
       position: relative;
     }
-
+    
     #modalBox.success {
       border-left: 6px solid #4CAF50;
-      color: #2a5934;
     }
-
+    
     #modalBox.fail {
       border-left: 6px solid #f44336;
-      color: #a80000;
     }
-
+    
     #modalCloseBtn {
       position: absolute;
-      top: 8px; right: 12px;
-      font-size: 22px;
-      font-weight: bold;
-      color: #333;
+      top: 10px;
+      right: 15px;
+      font-size: 24px;
       cursor: pointer;
-      user-select: none;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Left Side with SVG -->
     <div class="left-panel">
-      <div class="svg-placeholder">
-        <img src="Images/loginsvg.svg" alt="Illustration" />
-      </div>
-      <p class="credit">© 2025 RUET Library</p>
+      <img src="Images/loginsvg.svg" alt="Login Illustration">
     </div>
-
-    <!-- Right Side with Login Form -->
+    
     <div class="right-panel">
       <div class="login-box">
-        <h2 class="centered">Login</h2>
-
+        <h2>Login to Booksy</h2>
+        
         <form method="POST" action="">
-          <label for="username">Username</label>
-          <input type="text" name="username" id="username" placeholder="Enter your username" required
-            value="<?php echo htmlspecialchars($username ?? '') ?>" />
-
-          <label for="password">Password</label>
-          <input type="password" name="password" id="password" placeholder="Enter your password" required />
-
+          <input type="text" name="username" placeholder="Username" required>
+          <input type="password" name="password" placeholder="Password" required>
+          
           <div class="link-row">
             <a href="#">Forgot Password?</a>
-            <a href="#">Terms and Conditions</a>
+            <a href="#">Terms & Conditions</a>
           </div>
-
+          
           <button type="submit">Login</button>
         </form>
-
+        
         <p class="register">Don't have an account? <a href="registration.php">Register Now</a></p>
-        <p class="contact">
-          Need help? <br />
-          <a href="mailto:support@ruet.edu.bd">support@ruet.edu.bd</a>
-        </p>
       </div>
     </div>
   </div>
 
-  <!-- Modal Popup -->
+  <!-- Modal for Alerts -->
   <div id="modalOverlay">
     <div id="modalBox" class="<?php echo htmlspecialchars($alert_type); ?>">
       <div id="modalCloseBtn">&times;</div>
@@ -146,19 +259,18 @@ $conn->close();
   </div>
 
   <script>
-    const modalOverlay = document.getElementById('modalOverlay');
-    const modalCloseBtn = document.getElementById('modalCloseBtn');
-
+    // Show modal if there's an alert message
     <?php if ($alert_message): ?>
-      modalOverlay.style.display = 'flex';
-
-      modalCloseBtn.addEventListener('click', () => {
-        modalOverlay.style.display = 'none';
+      document.getElementById('modalOverlay').style.display = 'flex';
+      
+      // Close modal when clicking X or outside
+      document.getElementById('modalCloseBtn').addEventListener('click', function() {
+        document.getElementById('modalOverlay').style.display = 'none';
       });
-
-      modalOverlay.addEventListener('click', (e) => {
-        if (e.target === modalOverlay) {
-          modalOverlay.style.display = 'none';
+      
+      document.getElementById('modalOverlay').addEventListener('click', function(e) {
+        if (e.target === this) {
+          this.style.display = 'none';
         }
       });
     <?php endif; ?>
