@@ -10,10 +10,7 @@ if (!isset($_SESSION['student_id'])) {
 $student_id = $_SESSION['student_id'];
 $sql = "SELECT * FROM books WHERE department = 'Civil'";
 $result = mysqli_query($conn, $sql);
-
-$showPopup = isset($_GET['request']) && $_GET['request'] == 'success';
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -103,19 +100,59 @@ $showPopup = isset($_GET['request']) && $_GET['request'] == 'success';
       background-color: #3e7b50;
     }
 
-    .popup-msg {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #2a5934;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      font-weight: bold;
+    /* ===== Popup Modal Center Screen ===== */
+    .modal-overlay {
       display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
       z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-box {
+      background: #ffffff;
+      padding: 30px 25px;
+      border-radius: 12px;
+      text-align: center;
+      max-width: 350px;
+      width: 90%;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+      animation: pop 0.3s ease;
+    }
+
+    .modal-box h3 {
+      margin-bottom: 15px;
+      color: #2a5934;
+      font-size: 20px;
+    }
+
+    .modal-box p {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .modal-box button {
+      background: #2a5934;
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .modal-box button:hover {
+      background: #3e7b50;
+    }
+
+    @keyframes pop {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
     }
   </style>
 </head>
@@ -125,8 +162,6 @@ $showPopup = isset($_GET['request']) && $_GET['request'] == 'success';
     <div>📘 Civil Book Collection</div>
     <a href="dashboard.php">Go to Dashboard</a>
   </div>
-
-  <div class="popup-msg" id="popup">📨 Request sent. Please wait a little...</div>
 
   <div class="container">
     <div class="book-grid">
@@ -143,7 +178,7 @@ $showPopup = isset($_GET['request']) && $_GET['request'] == 'success';
             <strong>Quantity:</strong> <?php echo $row['quantity']; ?><br>
             <strong>Status:</strong> <?php echo $row['status']; ?><br>
           </div>
-          <form action="request_book.php" method="POST">
+          <form action="borrow_request.php" method="POST">
             <input type="hidden" name="book_id" value="<?php echo $row['book_id']; ?>">
             <input type="hidden" name="student_id" value="<?php echo $student_id; ?>">
             <button type="submit" class="borrow-btn">Borrow</button>
@@ -153,14 +188,40 @@ $showPopup = isset($_GET['request']) && $_GET['request'] == 'success';
     </div>
   </div>
 
+  <!-- ===== Center Screen Modal ===== -->
+  <div class="modal-overlay" id="statusModal">
+    <div class="modal-box">
+      <h3 id="modalTitle">📨 Request Status</h3>
+      <p id="modalMessage">Please wait a little…</p>
+      <button onclick="window.location.href='dashboard.php'">Go to Dashboard</button>
+    </div>
+  </div>
+
   <script>
-    const show = <?php echo $showPopup ? 'true' : 'false'; ?>;
-    if (show) {
-      const popup = document.getElementById('popup');
-      popup.style.display = 'block';
-      setTimeout(() => {
-        popup.style.display = 'none';
-      }, 3000);
+    // URL থেকে request query বের করো
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get('request');
+    if (status) {
+      const modal = document.getElementById('statusModal');
+      const title = document.getElementById('modalTitle');
+      const message = document.getElementById('modalMessage');
+
+      if (status === 'success') {
+        title.textContent = '✅ Request Sent!';
+        message.textContent = 'Please wait a little…';
+      } else if (status === 'fail') {
+        title.textContent = '❌ Failed!';
+        message.textContent = 'Something went wrong. Please try again.';
+      } else if (status === 'unavailable') {
+        title.textContent = '📚 Not Available!';
+        message.textContent = 'This book is not currently available.';
+      } else if (status === 'already') {
+        title.textContent = '⚠️ Already Requested!';
+        message.textContent = 'You already have a pending request for this book.';
+      }
+
+      // show modal
+      modal.style.display = 'flex';
     }
   </script>
 

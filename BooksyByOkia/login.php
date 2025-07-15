@@ -14,15 +14,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $alert_message = "Please enter both username and password.";
     $alert_type = "fail";
   } else {
-    $stmt = $conn->prepare("SELECT password FROM admins WHERE username = ?");
+    // এখানে id ও password নিয়ে আসব
+    $stmt = $conn->prepare("SELECT id, password FROM admins WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
-    $stmt->bind_result($stored_password);
+    $stmt->bind_result($admin_id, $stored_password);
     $user_exists = $stmt->fetch();
     $stmt->close();
 
     if ($user_exists && $password === $stored_password) {
+      // ✅ এখানে session set করলাম
+      $_SESSION['admin_id'] = $admin_id;
       $_SESSION['admin_username'] = $username;
+
+     
       header("Location: admin_dashboard.php");
       exit;
     } else {
@@ -142,3 +147,4 @@ $conn->close();
   </script>
 </body>
 </html>
+
