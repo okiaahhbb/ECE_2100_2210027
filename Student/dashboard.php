@@ -396,12 +396,11 @@ require_once 'config.php';
   <div class="sidebar">
     <img src="Images/cat.svg" alt="Profile Icon">
     <ul>
-      <li><a href="#">About You</a></li>
-      <li><a href="#">Category</a></li>
-      <li><a href="#">Borrow Now!</a></li>
-      <li><a href="#">Borrow History</a></li>
-      <li><a href="#">Wishlist</a></li>
-      <li><a href="#">Fine</a></li>
+      <li><a href="aboutme.php">About You</a></li>
+      <li><a href="category.php">Category</a></li>
+      <li><a href="recommendations.php">Recommendations</a></li>
+      <li><a href="borrow_history.php">Borrow History</a></li>
+      
     </ul>
     <div class="sidebar-divider"></div>
     <div class="sidebar-section-title">More</div>
