@@ -18,7 +18,7 @@
     <input type="text" class="search" placeholder="Search books..." />
     <nav class="nav-links">
       <a href="index.php">Home</a>
-      <a href="admin_collection.php">Collection</a>
+      <a href="Collection.php">Collection</a>
     </nav>
   </header>
 

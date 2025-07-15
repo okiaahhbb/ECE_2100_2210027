@@ -1,18 +1,10 @@
 <?php
 session_start();
-
-$servername = "localhost";
-$dbusername = "root";
-$dbpassword = "";
-$dbname = "booksy";
-
-$conn = new mysqli($servername, $dbusername, $dbpassword, $dbname);
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
-}
+require_once("config.php");
 
 $alert_message = "";
 $alert_type = "";
+$username = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $username = trim($_POST['username'] ?? '');
@@ -50,6 +42,43 @@ $conn->close();
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin Login</title>
   <link rel="stylesheet" href="admin_login.css" />
+  <style>
+    /* modal popup basic style */
+    #modalOverlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    #modalBox {
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 8px;
+      text-align: center;
+      min-width: 250px;
+      position: relative;
+      animation: pop 0.3s ease;
+    }
+    #modalBox.fail {
+      border: 2px solid #e74c3c;
+      color: #e74c3c;
+    }
+    #modalCloseBtn {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      cursor: pointer;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    @keyframes pop {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -91,13 +120,25 @@ $conn->close();
     </div>
   </div>
 
+  <!-- modal -->
   <div id="modalOverlay">
     <div id="modalBox" class="<?php echo htmlspecialchars($alert_type); ?>">
       <div id="modalCloseBtn">&times;</div>
       <p><?php echo htmlspecialchars($alert_message); ?></p>
     </div>
   </div>
+
+  <script>
+    // Modal show/hide logic
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    <?php if (!empty($alert_message)) : ?>
+      modalOverlay.style.display = 'flex';
+    <?php endif; ?>
+
+    modalCloseBtn.addEventListener('click', () => {
+      modalOverlay.style.display = 'none';
+    });
+  </script>
 </body>
 </html>
-
-
