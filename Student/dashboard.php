@@ -405,8 +405,8 @@ require_once 'config.php';
     <div class="sidebar-divider"></div>
     <div class="sidebar-section-title">More</div>
     <ul>
-      <li><a href="#">Settings</a></li>
-      <li><a href="#">Help</a></li>
+      <li><a href="aboutus.php">About Us</a></li>
+      <li><a href="help.php">Help</a></li>
       <li><a href="logout.php">Logout</a></li>
     </ul>
   </div>

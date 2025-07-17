@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $alert_message = "Please enter both username and password.";
     $alert_type = "fail";
   } else {
-    // এখানে id ও password নিয়ে আসব
+    
     $stmt = $conn->prepare("SELECT id, password FROM admins WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->close();
 
     if ($user_exists && $password === $stored_password) {
-      // ✅ এখানে session set করলাম
+      
       $_SESSION['admin_id'] = $admin_id;
       $_SESSION['admin_username'] = $username;
 

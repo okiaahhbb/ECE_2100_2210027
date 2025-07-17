@@ -175,7 +175,11 @@ if (!$user) {
   <p><strong>Department:</strong> <?= htmlspecialchars($user['department']); ?></p>
   <p><strong>Account Status:</strong> <?= htmlspecialchars($user['account_status']); ?></p>
 
-  <a href="edit-profile.php" class="edit-btn">Edit Profile</a>
+  <a href="edit-profile.php" class="edit-btn">Edit Profile</a> <!-- Go Back to Dashboard button -->
+<a href="dashboard.php" class="edit-btn" style="margin-top: 15px;">⬅ Go Back to Dashboard</a>
+
+ 
+
 </div>
 
 </body>

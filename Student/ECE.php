@@ -203,6 +203,60 @@ $result = mysqli_query($conn, $sql);
   </style>
 </head>
 <body>
+<?php if (isset($_GET['request']) && $_GET['request'] === 'success'): ?>
+  <div id="success-popup">
+    <div class="popup-content">
+      <p><strong>✅ Request Sent!</strong><br>Please wait a little...</p>
+      <button onclick="closePopup()">Close</button>
+    </div>
+  </div>
+
+  <style>
+    #success-popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .popup-content {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+
+    .popup-content button {
+      margin-top: 15px;
+      padding: 8px 16px;
+      background-color: #14532d;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .popup-content button:hover {
+      background-color: #166534;
+    }
+  </style>
+
+  <script>
+    function closePopup() {
+      document.getElementById("success-popup").style.display = "none";
+      const url = new URL(window.location.href);
+      url.searchParams.delete('request');
+      window.history.replaceState({}, document.title, url.pathname);
+    }
+  </script>
+<?php endif; ?>
 
   <div class="navbar">
     <div>📘 ECE Book Collection</div>

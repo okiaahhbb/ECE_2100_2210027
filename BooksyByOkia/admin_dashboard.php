@@ -2,13 +2,11 @@
 session_start();
 require_once("config.php");
 
-// Login check
 if (!isset($_SESSION['admin_username'])) {
     header("Location: login.php");
     exit();
 }
 
-// Admin info
 $user = [
     'username' => $_SESSION['admin_username'],
     'email' => 'admin@example.com',
@@ -235,17 +233,15 @@ $user = [
   <div class="sidebar">
     <img src="Images/cat.svg" alt="Profile Icon">
     <ul>
-      <li><a href="#">About You</a></li>
       <li><a href="BookManage.php">Manage Books</a></li>
       <li><a href="UserManage.php">Manage Users</a></li>
       <li><a href="FeedbackManage.php">Manage Feedback</a></li>
-      <li><a href="#">Report</a></li>
+      <li><a href="BorrowRequest.php">Approve Borrow</a></li>
     </ul>
     <div class="sidebar-divider"></div>
     <div class="sidebar-section-title">More</div>
     <ul>
-      <li><a href="#">Settings</a></li>
-      <li><a href="#">Help</a></li>
+    
       <li><a href="logout.php">Logout</a></li>
     </ul>
   </div>
@@ -265,7 +261,7 @@ $user = [
         <p><strong>Username:</strong> <?php echo htmlspecialchars($user['username']); ?></p>
         <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
         <p><strong>Phone:</strong> <?php echo htmlspecialchars($user['phone']); ?></p>
-        <a href="edit-profile.php" class="edit-btn">✏️ Edit Profile</a>
+        
       </div>
       <div class="about-right">
         <img src="Images/cat.svg" alt="Profile Illustration" />

@@ -2,12 +2,10 @@
 session_start();
 include '../db_connect.php';
 
-
 if (!isset($_SESSION['admin_id'])) {
     header("Location: login.php");
     exit();
 }
-
 
 $sql = "
     SELECT br.request_id, br.student_id, br.book_id, br.status, br.requested_at, 
@@ -23,11 +21,11 @@ $result = mysqli_query($conn, $sql);
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Borrow Requests</title>
+<meta charset="UTF-8" />
+<title>Borrow Requests - Admin</title>
 <style>
     body {
-        font-family: 'Segoe UI', sans-serif;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         margin: 0;
         background: #f4f6f9;
     }
@@ -55,9 +53,11 @@ $result = mysqli_query($conn, $sql);
     }
     .request-grid {
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
         gap: 20px;
         padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto 50px;
     }
     .request-card {
         background: #fff;
@@ -65,7 +65,10 @@ $result = mysqli_query($conn, $sql);
         box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         padding: 15px;
         text-align: center;
-        transition: transform 0.3s;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.3s ease;
     }
     .request-card:hover {
         transform: scale(1.03);
@@ -76,23 +79,27 @@ $result = mysqli_query($conn, $sql);
         object-fit: contain;
         border-radius: 8px;
         background: #f3f3f3;
-        margin-bottom: 10px;
+        margin-bottom: 12px;
     }
     .book-info {
         font-size: 14px;
-        margin-bottom: 10px;
+        margin-bottom: 12px;
+        color: #333;
     }
     .actions {
         display: flex;
         justify-content: center;
-        gap: 10px;
+        gap: 12px;
     }
     .approve-btn, .decline-btn {
-        padding: 6px 10px;
+        padding: 8px 14px;
         border: none;
         border-radius: 6px;
         font-weight: bold;
         cursor: pointer;
+        font-size: 14px;
+        flex: 1;
+        transition: background-color 0.3s ease;
     }
     .approve-btn {
         background: #28a745;
@@ -108,6 +115,26 @@ $result = mysqli_query($conn, $sql);
     .decline-btn:hover {
         background: #c82333;
     }
+
+    /* Success popup */
+    .success-popup {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #27ae60;
+        color: #fff;
+        padding: 15px 25px;
+        border-radius: 12px;
+        font-size: 16px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        z-index: 9999;
+        animation: fadeOut 3s ease-in-out forwards;
+    }
+    @keyframes fadeOut {
+        0% {opacity: 1;}
+        80% {opacity: 1;}
+        100% {opacity: 0; display: none;}
+    }
 </style>
 </head>
 <body>
@@ -122,6 +149,8 @@ $result = mysqli_query($conn, $sql);
 
 <h1>Pending Borrow Requests</h1>
 
+
+
 <div class="request-grid">
 <?php while($row = mysqli_fetch_assoc($result)) { ?>
     <div class="request-card">
@@ -134,15 +163,15 @@ $result = mysqli_query($conn, $sql);
             Edition: <?php echo htmlspecialchars($row['edition']); ?><br>
             Student ID: <?php echo htmlspecialchars($row['student_id']); ?><br>
             Request ID: <?php echo htmlspecialchars($row['request_id']); ?><br>
-            Date: <?php echo htmlspecialchars($row['requested_at']); ?>
+            Requested at: <?php echo htmlspecialchars($row['requested_at']); ?>
         </div>
         <div class="actions">
-            <form action="process_request.php" method="POST" style="display:inline;">
+            <form action="process_request.php" method="POST" style="margin:0; flex:1;">
                 <input type="hidden" name="request_id" value="<?php echo $row['request_id']; ?>">
                 <input type="hidden" name="action" value="approve">
                 <button type="submit" class="approve-btn">Approve</button>
             </form>
-            <form action="process_request.php" method="POST" style="display:inline;">
+            <form action="process_request.php" method="POST" style="margin:0; flex:1;">
                 <input type="hidden" name="request_id" value="<?php echo $row['request_id']; ?>">
                 <input type="hidden" name="action" value="decline">
                 <button type="submit" class="decline-btn">Decline</button>
@@ -154,5 +183,7 @@ $result = mysqli_query($conn, $sql);
 
 </body>
 </html>
+
+
 
 

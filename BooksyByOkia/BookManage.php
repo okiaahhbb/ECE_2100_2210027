@@ -2,13 +2,12 @@
 session_start();
 require_once("config.php");
 
-// ✅ যদি admin লগিন না করা থাকে, login.php তে পাঠাবে
 if (!isset($_SESSION['admin_username'])) {
     header("Location: login.php");
     exit();
 }
 
-// ✅ নতুন বই যোগ করা
+// Book Add
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_book'])) {
     $book_name   = trim($_POST['book_name']);
     $author_name = trim($_POST['author_name']);
@@ -17,7 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_book'])) {
     $status      = trim($_POST['status']);
     $department  = trim($_POST['department']);
 
-    // ছবি আপলোড
     $book_pic = "";
     if (!empty($_FILES['book_pic']['name'])) {
         $target_dir = "Images/";
@@ -33,11 +31,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_book'])) {
     $stmt->execute();
     $stmt->close();
 
-    header("Location: BookManage.php?added=1");
+    header("Location: BookManage.php?popup=added");
     exit();
 }
 
-// ✅ কোনো বই delete করা
+// Book Delete
 if (isset($_GET['delete'])) {
     $book_id = intval($_GET['delete']);
     $stmt = $conn->prepare("DELETE FROM books WHERE book_id=?");
@@ -45,11 +43,29 @@ if (isset($_GET['delete'])) {
     $stmt->execute();
     $stmt->close();
 
-    header("Location: BookManage.php?deleted=1");
+    header("Location: BookManage.php?popup=deleted");
     exit();
 }
 
-// ✅ সব বই দেখানো
+// Book Edit
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_book'])) {
+    $book_id     = (int) $_POST['book_id'];
+    $book_name   = trim($_POST['book_name']);
+    $author_name = trim($_POST['author_name']);
+    $edition     = trim($_POST['edition']);
+    $quantity    = (int) $_POST['quantity'];
+    $status      = trim($_POST['status']);
+    $department  = trim($_POST['department']);
+
+    $stmt = $conn->prepare("UPDATE books SET book_name=?, author_name=?, edition=?, quantity=?, status=?, department=? WHERE book_id=?");
+    $stmt->bind_param("sssissi", $book_name, $author_name, $edition, $quantity, $status, $department, $book_id);
+    $stmt->execute();
+    $stmt->close();
+
+    header("Location: BookManage.php?popup=edited");
+    exit();
+}
+
 $result = $conn->query("SELECT * FROM books ORDER BY book_id DESC");
 ?>
 <!DOCTYPE html>
@@ -86,20 +102,21 @@ h2 {
 }
 .form-section {
   background: #fff;
-  padding: 20px;
-  margin-bottom: 30px;
-  border-radius: 10px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  padding: 30px;
+  max-width: 600px;
+  margin: 40px auto 0;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
 }
 .form-section label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   font-weight: bold;
 }
 .form-section input, .form-section select {
   width: 100%;
-  padding: 8px;
-  margin-bottom: 12px;
+  padding: 10px;
+  margin-bottom: 16px;
   border-radius: 6px;
   border: 1px solid #ccc;
 }
@@ -107,7 +124,7 @@ h2 {
   background: #2a5934;
   color: #fff;
   border: none;
-  padding: 10px 20px;
+  padding: 12px 20px;
   border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
@@ -132,25 +149,45 @@ h2 {
   border-radius: 6px;
   margin-bottom: 8px;
 }
-.delete-btn {
+.delete-btn, .edit-btn {
   display: inline-block;
-  background: #e74c3c;
-  color: #fff;
   padding: 6px 12px;
   border-radius: 6px;
-  text-decoration: none;
   font-weight: bold;
+  margin-top: 6px;
+  text-decoration: none;
+  color: #fff;
+}
+.delete-btn {
+  background: #e74c3c;
 }
 .delete-btn:hover {
   background: #c0392b;
 }
-.success-msg {
+.edit-btn {
+  background: #3498db;
+  margin-right: 5px;
+  border: none;
+  cursor: pointer;
+}
+.success-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   background: #27ae60;
   color: #fff;
-  padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 6px;
-  font-weight: bold;
+  padding: 20px 30px;
+  border-radius: 12px;
+  font-size: 18px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  z-index: 9999;
+  animation: fadeOut 3s ease-in-out forwards;
+}
+@keyframes fadeOut {
+  0% {opacity: 1;}
+  80% {opacity: 1;}
+  100% {opacity: 0; display: none;}
 }
 </style>
 </head>
@@ -163,13 +200,42 @@ h2 {
   </div>
 </div>
 
+<?php if(isset($_GET['popup'])): ?>
+  <div class="success-popup">
+    <?php
+      $type = $_GET['popup'];
+      if ($type === 'added') echo "✅ Book Added Successfully!";
+      elseif ($type === 'deleted') echo "🗑️ Book Deleted Successfully!";
+      elseif ($type === 'edited') echo "✏️ Book Edited Successfully!";
+    ?>
+  </div>
+<?php endif; ?>
+
 <div class="container">
-  <?php if(isset($_GET['added'])): ?>
-    <div class="success-msg">✅ Book Added Successfully!</div>
-  <?php endif; ?>
-  <?php if(isset($_GET['deleted'])): ?>
-    <div class="success-msg" style="background:#e74c3c;">🗑️ Book Deleted Successfully!</div>
-  <?php endif; ?>
+
+  <h2>📖 Existing Books</h2>
+  <div class="book-grid">
+    <?php while($row = $result->fetch_assoc()): ?>
+      <div class="book-card">
+        <img src="Images/<?php echo htmlspecialchars($row['book_pic']); ?>" alt="Book"
+             onerror="this.onerror=null; this.src='Images/default.jpg';">
+        <form method="POST" style="margin-top: 10px;">
+          <input type="hidden" name="book_id" value="<?php echo $row['book_id']; ?>">
+          <input type="text" name="book_name" value="<?php echo htmlspecialchars($row['book_name']); ?>">
+          <input type="text" name="author_name" value="<?php echo htmlspecialchars($row['author_name']); ?>">
+          <input type="text" name="edition" value="<?php echo htmlspecialchars($row['edition']); ?>">
+          <input type="number" name="quantity" value="<?php echo htmlspecialchars($row['quantity']); ?>">
+          <select name="status">
+            <option value="Available" <?php if($row['status']=='Available') echo 'selected'; ?>>Available</option>
+            <option value="Borrowed" <?php if($row['status']=='Borrowed') echo 'selected'; ?>>Borrowed</option>
+          </select>
+          <input type="text" name="department" value="<?php echo htmlspecialchars($row['department']); ?>">
+          <button type="submit" name="edit_book" class="edit-btn">Edit</button>
+          <a class="delete-btn" href="?delete=<?php echo $row['book_id']; ?>" onclick="return confirm('Delete this book?');">Delete</a>
+        </form>
+      </div>
+    <?php endwhile; ?>
+  </div>
 
   <div class="form-section">
     <h2>Add New Book</h2>
@@ -202,21 +268,6 @@ h2 {
     </form>
   </div>
 
-  <h2>📖 Existing Books</h2>
-  <div class="book-grid">
-    <?php while($row = $result->fetch_assoc()): ?>
-      <div class="book-card">
-        <img src="Images/<?php echo htmlspecialchars($row['book_pic']); ?>" alt="Book"
-             onerror="this.onerror=null; this.src='Images/default.jpg';">
-        <strong><?php echo htmlspecialchars($row['book_name']); ?></strong><br>
-        <small><?php echo htmlspecialchars($row['author_name']); ?></small><br>
-        <small>Edition: <?php echo htmlspecialchars($row['edition']); ?></small><br>
-        <small>Qty: <?php echo htmlspecialchars($row['quantity']); ?></small><br>
-        <small>Dept: <?php echo htmlspecialchars($row['department']); ?></small><br>
-        <a class="delete-btn" href="?delete=<?php echo $row['book_id']; ?>" onclick="return confirm('Delete this book?');">Delete</a>
-      </div>
-    <?php endwhile; ?>
-  </div>
 </div>
 </body>
 </html>
