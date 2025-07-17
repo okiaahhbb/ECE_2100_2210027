@@ -109,6 +109,7 @@ $conn->close();
             <a href="#">Forgot Password?</a>
             <a href="#">Terms and Conditions</a>
           </div>
+<br>
 
           <p style="color: var(--accent-color); font-size: 14px; margin-bottom: 10px; text-align: center;">
             Only authorized admin users may login here.
