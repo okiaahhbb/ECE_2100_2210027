@@ -1,1 +1,10 @@
-
+CREATE TABLE students (
+    student_id INT PRIMARY KEY AUTO_INCREMENT,
+    full_name VARCHAR(255) NOT NULL,
+    roll VARCHAR(50) UNIQUE NOT NULL,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    department VARCHAR(100),
+    phone VARCHAR(20),
+    email VARCHAR(255) UNIQUE NOT NULL
+);
